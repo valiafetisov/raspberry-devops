@@ -20,15 +20,18 @@ Set of commands to setup raspberry kiosk mode
 ssh root@raspberrypi.local
 ```
 
+
 ## change default password
 ```
 passwd
 ```
 
+
 ## disable overscan
 ```
 sudo raspi-config
 ```
+
 
 ## change wallpaper
 
@@ -68,7 +71,7 @@ sudo raspi-config
     ```
     sudo nano /etc/lightdm/lightdm.conf
     ```
-- add
+- replace
     ```
     xserver-command=X -s 0 dpms
     ```
@@ -128,6 +131,7 @@ export PATH=$PATH:/opt/nodejs/bin
 
 
 ## setup a tunnel
+
 - generate ssh keys, [instruction](https://www.raspberrypi.org/documentation/remote-access/ssh/passwordless.md)
     ```
     sudo ssh-keygen -t rsa -C eben@pi
@@ -150,28 +154,23 @@ export PATH=$PATH:/opt/nodejs/bin
     ```
 
 
-## add chromium autostart to crontab
-    ```
-    @reboot tmux new -d 'sleep 30 && DISPLAY=:0 /usr/bin/chromium-browser --noerordialogs --incognito --disable-infobars --kiosk "http://bemyfriend.online/screens/1"'
-    ```
-
-
-
-## start a video
+## Configure cron
 
 ```
-omxplayer `youtube-dl -g https://www.youtube.com/watch?v=bCOc8IS0Uq8` --win "100 80 1380 800"
-vlc `youtube-dl -g https://www.youtube.com/watch?v=bCOc8IS0Uq8`
+@reboot tmux new -d 'sleep 30 && DISPLAY=:0 /usr/bin/chromium-browser --noerordialogs --incognito --disable-infobars --kiosk "http://bemyfriend.online/screens/1"'
 ```
 
 
-## start browser
+## Configure cron from root (`sudo crontab -e`)
 
 ```
-DISPLAY=:0 /usr/bin/chromium-browser --noerordialogs --incognito --disable-infobars --kiosk "https://www.youtube.com/watch?v=ekjibsihUBo"
-DISPLAY=:2 /usr/bin/chromium-browser --noerordialogs --incognito --disable-infobars --kiosk "file:///home/pi/ireland/Petr%20Fetisov_ZagranPass.pdf"
+@reboot /bin/rm /home/pi/.config/chromium/SingletonLock
+@reboot /bin/sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' /home/pi/.config/chromium/Default/Preferences
+@reboot /usr/bin/autossh -Tqf -o "ServerAliveInterval=5" -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@diane.ai -NC -R "*:6001:localhost:22"
 ```
 
+
+# Extra
 
 ## take screenshot
 ```
@@ -179,18 +178,9 @@ sudo apt-get install scrot
 DISPLAY=:0 scrot
 ```
 
-
-## Configure cron
+## start a video
 
 ```
-#@reboot /usr/bin/autossh -Tqf -o "ServerAliveInterval=5" -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@diane.ai -NC -R "*:5556:localhost:5901"
-@reboot tmux new -d 'omxplayer `youtube-dl -g https://www.youtube.com/watch?v=q6EoRBvdVPQ` --win "100 80 1380 800"'
-
-#@reboot tmux new -d 'sleep 30 && DISPLAY=:0 /usr/bin/chromium-browser --noerordialogs --incognito --disable-infobars --kiosk "http://192.168.43.193:6100"'
-
-@reboot tmux new -d 'sleep 30 && DISPLAY=:0 /usr/bin/chromium-browser --noerordialogs --incognito --disable-infobars --kiosk "http://bemyfriend.online/screens/1"'
-
-@reboot /usr/bin/autossh -Tqf -o "ServerAliveInterval=5" -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@diane.ai -NC -R "*:5555:localhost:22"
-@reboot /usr/bin/node /root/connect-to-wifi.js >> /root/connect-to-wifi.log
+omxplayer `youtube-dl -g https://www.youtube.com/watch?v=bCOc8IS0Uq8` --win "100 80 1380 800"
+vlc `youtube-dl -g https://www.youtube.com/watch?v=bCOc8IS0Uq8`
 ```
-
