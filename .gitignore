@@ -1,0 +1,9 @@
+# app
+wpa_supplicant.conf
+
+# system
+.DS_Store
+.env
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
