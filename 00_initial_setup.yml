@@ -23,6 +23,12 @@
     with_file:
       - files/ssh_keys/valia.pub
 
+  - name: Add authorized pi key va
+    authorized_key: user=pi
+                    key="{{ item }}"
+    with_file:
+      - files/ssh_keys/va.pub
+
   # - name: Disallow password authentication
   #   action: lineinfile dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present
   #   notify: Restart ssh

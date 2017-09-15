@@ -1,0 +1,74 @@
+---
+# usage: ansible-playbook -i hosts.ini -v 02_main_setup.yml --user pi
+- hosts: rasp_all
+  handlers:
+    - include: 'handlers/main.yml'
+
+  tasks:
+
+  - name: change wallpaper
+    template: src=files/desktop-items-0.conf dest=/home/pi/.config/pcmanfm/LXDE-pi/desktop-items-0.conf group=pi owner=pi force=yes
+
+  - name: restart pcmanfm
+    shell: DISPLAY=:0 /usr/bin/pcmanfm --reconfigure
+
+  # - name: remove top panel(autohide)
+  #   lineinfile: 
+  #     dest: /home/pi/.config/lxpanel/LXDE-pi/panels/panel
+  #     regexp: 'autohide=0' 
+  #     line: 'autohide=1'
+
+  # - name: remove top panel(heightwhenhidden)
+  #   lineinfile: 
+  #     dest: /home/pi/.config/lxpanel/LXDE-pi/panels/panel
+  #     regexp: 'heightwhenhidden=\d+' 
+  #     line: 'heightwhenhidden=0'
+
+  - name: setup power managment
+    lineinfile: 
+      dest: /etc/lightdm/lightdm.conf
+      regexp: '^xserver-command='
+      line: 'xserver-command=X -s 0 dpms'
+    sudo: true
+
+    # autohide cursor
+
+  - name: install x11-xserver-utils unclutter
+    apt: pkg={{ item }} state=latest
+    sudo: yes
+    with_items:
+      - unclutter
+      - x11-xserver-utils
+
+  # - name: edit /etc/xdg/lxsession/LXDE/autostart
+  #   lineinfile: 
+  #     dest: /etc/xdg/lxsession/LXDE/autostart
+  #     line: '@unclutter -idle 0.1 -root'
+  #   sudo: true
+
+  - name: add chromium to crontab
+    cron:
+      name: "chromium autostart"
+      special_time: reboot
+      job: tmux new -d 'sleep 30 && DISPLAY=:0 /usr/bin/chromium-browser --noerordialogs --incognito --disable-infobars --kiosk "http://bemyfriend.online/screens/{{inventory_hostname_short}}"'
+
+  - name: disable screensaver LXDE-pi
+    template:
+      src: files/autostart
+      dest: "/etc/xdg/lxsession/LXDE-pi/autostart"
+      owner: root
+      group: root
+      mode: 0644
+    sudo: yes
+
+  - name: disable screensaver LXDE
+    template:
+      src: files/autostart
+      dest: "/etc/xdg/lxsession/LXDE/autostart"
+      owner: root
+      group: root
+      mode: 0644
+    sudo: yes
+    
+
+  

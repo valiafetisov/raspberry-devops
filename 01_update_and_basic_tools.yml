@@ -27,6 +27,7 @@
     sudo: yes
     with_items:
       - git
+      - tmux
       - curl
       - zsh
       - rpi-update
@@ -44,10 +45,6 @@
   - name: Let's clean deb packages.
     shell: "apt-get clean"
     sudo: yes
-
-  - name: Install pkg-config
-    apt: pkg=pkg-config state=present
-    sudo: true
 
   - shell: rpi-update
     sudo: true
