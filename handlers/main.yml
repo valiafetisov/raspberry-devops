@@ -1,0 +1,16 @@
+---
+
+- name: restart_ssh
+  sudo: true
+  service: name=ssh state=restarted
+
+- name: reboot
+  sudo: true
+  command: /sbin/shutdown -r +1
+  async: 0
+  poll: 0
+  ignore_errors: true
+
+- name: restart avahi-daemon
+  service: name=avahi-daemon state=restarted
+  sudo: yes

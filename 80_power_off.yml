@@ -1,0 +1,10 @@
+---
+
+# ansible rasp_all -i hosts.ini  -a "/sbin/reboot" -u pi --sudo
+
+- hosts: power_off
+  tasks:
+
+  - name: Shutdown
+    command: /sbin/shutdown now
+    sudo: yes
