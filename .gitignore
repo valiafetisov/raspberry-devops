@@ -1,5 +1,6 @@
 # app
 *.retry
+id_rsa
 wpa_supplicant.conf
 
 # system
