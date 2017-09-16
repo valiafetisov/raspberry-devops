@@ -1,0 +1,11 @@
+---
+# usage: ansible-playbook -i hosts.ini -v 03_ssh_tunnel.yml --user pi
+- hosts: rasp_all
+  handlers:
+    - include: 'handlers/main.yml'
+
+  tasks:
+
+  - name: Reboot
+    command: echo buy
+    notify: reboot
