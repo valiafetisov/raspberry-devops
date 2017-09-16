@@ -12,17 +12,17 @@
   - name: restart pcmanfm
     shell: DISPLAY=:0 /usr/bin/pcmanfm --reconfigure
 
-  # - name: remove top panel(autohide)
-  #   lineinfile:
-  #     dest: /home/pi/.config/lxpanel/LXDE-pi/panels/panel
-  #     regexp: 'autohide=0'
-  #     line: 'autohide=1'
+  - name: remove top panel(autohide)
+    lineinfile:
+      dest: /home/pi/.config/lxpanel/LXDE-pi/panels/panel
+      regexp: 'autohide=0'
+      line: '  autohide=1'
 
-  # - name: remove top panel(heightwhenhidden)
-  #   lineinfile:
-  #     dest: /home/pi/.config/lxpanel/LXDE-pi/panels/panel
-  #     regexp: 'heightwhenhidden=\d+'
-  #     line: 'heightwhenhidden=0'
+  - name: remove top panel(heightwhenhidden)
+    lineinfile:
+      dest: /home/pi/.config/lxpanel/LXDE-pi/panels/panel
+      regexp: 'heightwhenhidden=\d+'
+      line: '  heightwhenhidden=0'
 
   - name: setup power managment
     lineinfile:
@@ -45,6 +45,18 @@
   #     dest: /etc/xdg/lxsession/LXDE/autostart
   #     line: '@unclutter -idle 0.1 -root'
   #   sudo: true
+
+  - name: add chromium autoremove lock
+    cron:
+      name: "chromium autoremove lock"
+      special_time: reboot
+      job: /bin/rm /home/pi/.config/chromium/SingletonLock
+
+  - name: add chromium cleanup with sed
+    cron:
+      name: "chromium cleanup with sed"
+      special_time: reboot
+      job: /bin/sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' /home/pi/.config/chromium/Default/Preferences
 
   - name: add chromium to crontab
     cron:
