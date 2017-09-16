@@ -8,6 +8,10 @@
 
   tasks:
 
+  - name: Configure dpkg
+    shell: "sudo dpkg --configure -a"
+    sudo: yes
+
   - name: Uninstall the massive wolfram-alpha engine
     apt: pkg={{ item }} state=absent
     sudo: yes
