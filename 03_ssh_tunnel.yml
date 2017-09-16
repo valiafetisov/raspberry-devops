@@ -19,7 +19,7 @@
       job: /usr/bin/autossh -Tqf -o "ServerAliveInterval=5" -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@diane.ai -NC -R "*:600{{inventory_hostname_short}}:localhost:22"
 
   - name: Add ssh public key
-    copy: 
+    copy:
       src: files/ssh_keys/id_rsa.pub
       dest: /home/pi/.ssh/id_rsa.pub
 
