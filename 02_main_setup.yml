@@ -27,7 +27,7 @@
   - name: setup power managment
     lineinfile:
       dest: /etc/lightdm/lightdm.conf
-      regexp: '^xserver-command='
+      regexp: 'xserver-command='
       line: 'xserver-command=X -s 0 dpms'
     sudo: true
 
