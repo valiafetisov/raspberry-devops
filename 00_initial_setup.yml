@@ -60,7 +60,3 @@
       state: present
     notify: reboot
     sudo: yes
-
-
-
-
