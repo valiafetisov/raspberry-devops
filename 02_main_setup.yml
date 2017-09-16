@@ -13,21 +13,21 @@
     shell: DISPLAY=:0 /usr/bin/pcmanfm --reconfigure
 
   # - name: remove top panel(autohide)
-  #   lineinfile: 
+  #   lineinfile:
   #     dest: /home/pi/.config/lxpanel/LXDE-pi/panels/panel
-  #     regexp: 'autohide=0' 
+  #     regexp: 'autohide=0'
   #     line: 'autohide=1'
 
   # - name: remove top panel(heightwhenhidden)
-  #   lineinfile: 
+  #   lineinfile:
   #     dest: /home/pi/.config/lxpanel/LXDE-pi/panels/panel
-  #     regexp: 'heightwhenhidden=\d+' 
+  #     regexp: 'heightwhenhidden=\d+'
   #     line: 'heightwhenhidden=0'
 
   - name: setup power managment
-    lineinfile: 
+    lineinfile:
       dest: /etc/lightdm/lightdm.conf
-      regexp: '^xserver-command='
+      regexp: 'xserver-command='
       line: 'xserver-command=X -s 0 dpms'
     sudo: true
 
@@ -41,7 +41,7 @@
       - x11-xserver-utils
 
   # - name: edit /etc/xdg/lxsession/LXDE/autostart
-  #   lineinfile: 
+  #   lineinfile:
   #     dest: /etc/xdg/lxsession/LXDE/autostart
   #     line: '@unclutter -idle 0.1 -root'
   #   sudo: true
@@ -69,6 +69,3 @@
       group: root
       mode: 0644
     sudo: yes
-    
-
-  

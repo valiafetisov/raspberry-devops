@@ -1,7 +1,7 @@
 ---
 # based on https://github.com/phred/5minbootstrap/blob/master/bootstrap.yml
 # pip install passlib для генерации хеша пароля
-# python -c "from passlib.hash import sha256_crypt; import getpass; print sha256_crypt.encrypt(getpass.getpass())" 
+# python -c "from passlib.hash import sha256_crypt; import getpass; print sha256_crypt.encrypt(getpass.getpass())"
 
 # usage: ansible-playbook -i hosts.ini -v 00_initial_setup.yml --user pi --ask-pass --ask-sudo-pass
 
