@@ -1,9 +1,8 @@
 @lxpanel --profile LXDE
 @pcmanfm --desktop --profile LXDE
-#@xscreensaver -no-splash
+@xscreensaver -no-splash
 @unclutter -idle 0.1 -root
 
 @xset s off
 @xset -dpms
 @xset s noblank
-
