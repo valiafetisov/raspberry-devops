@@ -1,0 +1,30 @@
+---
+# usage: ansible-playbook -i hosts.ini -v 03_ssh_tunnel.yml --user pi
+- hosts: rasp_all
+  handlers:
+    - include: 'handlers/main.yml'
+
+  tasks:
+
+  - name: install autossh
+    apt: pkg={{ item }} state=latest
+    sudo: yes
+    with_items:
+      - autossh
+
+  - name: ssh tunnel
+    cron:
+      name: "ssh tunnel"
+      special_time: reboot
+      job: /usr/bin/autossh -Tqf -o "ServerAliveInterval=5" -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@diane.ai -NC -R "*:600{{inventory_hostname_short}}:localhost:22"
+
+  - name: Add ssh public key
+    copy: 
+      src: files/ssh_keys/id_rsa.pub
+      dest: /home/pi/.ssh/id_rsa.pub
+
+  - name: Add ssh private key
+    copy:
+      src: files/ssh_keys/id_rsa
+      dest: /home/pi/.ssh/id_rsa
+      mode: 0600
