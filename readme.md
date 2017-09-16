@@ -11,5 +11,5 @@ For text instructions please refer to [text-instructions.md](./text-instructions
 
 3. Выполнить
     ```
-    ansible-playbook -i hosts.ini -v 00_initial_setup.yml --user pi --ask-pass --ask-sudo-pass
+    ansible-playbook -i hosts.ini --user pi --ask-pass -v 00_initial_setup.yml
     ```

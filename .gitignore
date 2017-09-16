@@ -1,4 +1,5 @@
 # app
+*.retry
 wpa_supplicant.conf
 
 # system
