@@ -28,3 +28,4 @@
       src: files/ssh_keys/id_rsa
       dest: /home/pi/.ssh/id_rsa
       mode: 0600
+    notify: reboot
