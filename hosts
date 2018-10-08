@@ -1,2 +1,0 @@
-[screens]
-diane.ai:6000     ansible_connection=ssh    ansible_user=root
