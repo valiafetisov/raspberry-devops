@@ -1,77 +1,85 @@
-Set of commands to setup raspberry kiosk mode
+Set of commands to setup Raspberry PI kiosk mode.
 
-# Setup instructions
+# Prepare SD card
 
-- burn image
+- Burn image
     ```
     diskutil list
     diskutil unmountDisk /dev/diskX
-    sudo dd bs=1m conv=sync if=/Users/user/Movies/2017-07-05-raspbian-jessie.img of=/dev/rdiskX
+    sudo dd bs=1m conv=sync if=~/2017-07-05-raspbian-jessie.img of=/dev/rdiskX
     diskutil eject /dev/diskX
     ```
-- put `wpa_supplicant.conf` into `boot` partitition
-- put empty `ssh` file into `boot` partitition
+- Put `wpa_supplicant.conf` into `boot` partitition with such a sintax
+    ```
+    network={
+      ssid="WIFI name"
+      psk="password"
+      key_mgmt=WPA-PSK
+      priority=10
+    }
+    ```
+- Put empty `ssh` file into `boot` partitition
 
 
-# Configure raspi
+# Configure Raspberry PI
 
-## connect
+## Connect
 ```
 ssh root@raspberrypi.local
 ```
 
 
-## change default password
+## Change default password
 ```
 passwd
 ```
 
 
-## disable overscan
+## Disable overscan
 ```
 sudo raspi-config
 ```
 
 
-## change wallpaper
+## Change wallpaper
 
-- open config file
+- Open config file
     ```
     sudo nano /home/pi/.config/pcmanfm/LXDE-pi/desktop-items-0.conf
     ```
-- change lines
+- Change lines
     ```
     wallpaper_mode=color
     desktop_bg=#000000
     show_trash=0
     ```
-- restart pcmanfm
+- Restart pcmanfm
     ```
     DISPLAY=:0 pcmanfm --reconfigure
     ```
 
 
-## remove top panel
+## Remove top (task) panel
 
-- open config file
+- Open config file
     ```
     sudo nano /home/pi/.config/lxpanel/LXDE-pi/panels/panel
     ```
-- change lines
+- Change lines
     ```
     autohide=1
     heightwhenhidden=0
     ```
-- reboot `sudo reboot`
+- Reboot `sudo reboot`
 
 
-## setup power managment
+## Setup power managment
 
-- open
+- Open
     ```
     sudo nano /etc/lightdm/lightdm.conf
     ```
-- replace
+- Replace
     ```
     xserver-command=X -s 0 dpms
     ```
@@ -102,35 +110,54 @@ sudo raspi-config
     ``` -->
 
 
-## autohide cursor
+## Autohide cursor
 
-- install
+- Install
     ```
     sudo apt-get install x11-xserver-utils unclutter
     ```
-- open
+- Open
     ```
     sudo nano /etc/xdg/lxsession/LXDE/autostart
     ```
-- add line
+- Add line
     ```
     @unclutter -idle 0.1 -root
     ```
 
+## Configure Cron to start a browser
 
-## install node
+Run `crontab -e` and paste:
+
+```
+@reboot tmux new -d 'sleep 30 && DISPLAY=:0 /usr/bin/chromium-browser --noerordialogs --incognito --disable-infobars --kiosk "http://bemyfriend.online/screens/1"'
+```
+
+__Configure Cron from root to take care of broken browser sessions:__
+
+Run `sudo crontab -e` and paste:
+
+```
+@reboot /bin/rm /home/pi/.config/chromium/SingletonLock
+@reboot /bin/sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' /home/pi/.config/chromium/Default/Preferences
+```
+
+
+# Extra
+
+## Install Node
 ```
 wget -O - https://raw.githubusercontent.com/sdesalas/node-pi-zero/master/install-node-v8.4.0.sh | bash
 ```
 
-### Add support for node CLI tools
+__Add support for Node CLI tools__
 ```
 # Add the following to the end of your ~/.profile file:
 export PATH=$PATH:/opt/nodejs/bin
 ```
 
 
-## setup a tunnel
+## Setup a reverse tunnel to your server (optional)
 
 - generate ssh keys, [instruction](https://www.raspberrypi.org/documentation/remote-access/ssh/passwordless.md)
     ```
@@ -153,32 +180,15 @@ export PATH=$PATH:/opt/nodejs/bin
     @reboot /usr/bin/autossh -Tqf -o "ServerAliveInterval=5" -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@diane.ai -NC -R "*:5555:localhost:22"
     ```
 
+# Useful
 
-## Configure cron
-
-```
-@reboot tmux new -d 'sleep 30 && DISPLAY=:0 /usr/bin/chromium-browser --noerordialogs --incognito --disable-infobars --kiosk "http://bemyfriend.online/screens/1"'
-```
-
-
-## Configure cron from root (`sudo crontab -e`)
-
-```
-@reboot /bin/rm /home/pi/.config/chromium/SingletonLock
-@reboot /bin/sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' /home/pi/.config/chromium/Default/Preferences
-@reboot /usr/bin/autossh -Tqf -o "ServerAliveInterval=5" -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no root@diane.ai -NC -R "*:6001:localhost:22"
-```
-
-
-# Extra
-
-## take screenshot
+## Take a screenshot
 ```
 sudo apt-get install scrot
 DISPLAY=:0 scrot
 ```
 
-## start a video
+## Start a youtube video
 
 ```
 omxplayer `youtube-dl -g https://www.youtube.com/watch?v=bCOc8IS0Uq8` --win "100 80 1380 800"
